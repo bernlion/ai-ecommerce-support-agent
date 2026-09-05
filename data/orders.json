@@ -1,0 +1,12 @@
+[
+  {"order_id": "ORD1001", "customer_id": "C1001", "products": ["P1004"], "status": "Shipped"},
+  {"order_id": "ORD1002", "customer_id": "C1001", "products": ["P1007", "P1012"], "status": "Processing"},
+  {"order_id": "ORD1003", "customer_id": "C1001", "products": ["P1009"], "status": "Delivered"},
+  {"order_id": "ORD1004", "customer_id": "C1002", "products": ["P1001"], "status": "Out for Delivery"},
+  {"order_id": "ORD1005", "customer_id": "C1002", "products": ["P1010"], "status": "Delivered"},
+  {"order_id": "ORD1006", "customer_id": "C1003", "products": ["P1005"], "status": "Processing"},
+  {"order_id": "ORD1007", "customer_id": "C1003", "products": ["P1008"], "status": "Cancelled"},
+  {"order_id": "ORD1008", "customer_id": "C1004", "products": ["P1003"], "status": "Shipped"},
+  {"order_id": "ORD1009", "customer_id": "C1005", "products": ["P1011"], "status": "Delivered"},
+  {"order_id": "ORD1010", "customer_id": "C1005", "products": ["P1006"], "status": "Processing"}
+]

@@ -1,0 +1,14 @@
+[
+  {"product_id": "P1001", "name": "Samsung Galaxy S24", "price": 58999, "brand": "Samsung", "category": "Smartphones", "stock": 18, "rating": 4.6},
+  {"product_id": "P1002", "name": "Apple iPhone 15", "price": 69900, "brand": "Apple", "category": "Smartphones", "stock": 9, "rating": 4.7},
+  {"product_id": "P1003", "name": "OnePlus Nord CE 4", "price": 24999, "brand": "OnePlus", "category": "Smartphones", "stock": 32, "rating": 4.3},
+  {"product_id": "P1004", "name": "Lenovo IdeaPad Slim 5", "price": 57990, "brand": "Lenovo", "category": "Laptops", "stock": 13, "rating": 4.4},
+  {"product_id": "P1005", "name": "ASUS TUF Gaming F15", "price": 71990, "brand": "ASUS", "category": "Laptops", "stock": 7, "rating": 4.5},
+  {"product_id": "P1006", "name": "HP 15s Student Laptop", "price": 52999, "brand": "HP", "category": "Laptops", "stock": 16, "rating": 4.2},
+  {"product_id": "P1007", "name": "Sony WH-CH720N", "price": 8990, "brand": "Sony", "category": "Headphones", "stock": 25, "rating": 4.4},
+  {"product_id": "P1008", "name": "boAt Rockerz 450", "price": 1499, "brand": "boAt", "category": "Headphones", "stock": 60, "rating": 4.0},
+  {"product_id": "P1009", "name": "Samsung Galaxy Watch6", "price": 22999, "brand": "Samsung", "category": "Smart Watches", "stock": 11, "rating": 4.5},
+  {"product_id": "P1010", "name": "Apple iPad 10th Gen", "price": 34900, "brand": "Apple", "category": "Tablets", "stock": 14, "rating": 4.6},
+  {"product_id": "P1011", "name": "Samsung Galaxy Tab S9 FE", "price": 32999, "brand": "Samsung", "category": "Tablets", "stock": 10, "rating": 4.4},
+  {"product_id": "P1012", "name": "Logitech Pebble Mouse 2", "price": 2295, "brand": "Logitech", "category": "Accessories", "stock": 45, "rating": 4.3}
+]
