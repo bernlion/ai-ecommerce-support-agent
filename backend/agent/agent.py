@@ -112,6 +112,8 @@ class EcommerceSupportAgent:
 
         if self._is_preference_message(message):
             return {"tool": "save_customer_memory", "arguments": {"customer_id": customer_id, "preferred_brand": brand, "category": category, "budget": budget, "note": message}}
+        if self._is_catalog_request(lower):
+            return {"tool": "search_products", "arguments": {"limit": 20}}
         if "return" in lower and order_id:
             reason = re.sub(r".*because", "", message, flags=re.IGNORECASE).strip() if "because" in lower else message
             return {"tool": "create_return_request", "arguments": {"order_id": order_id, "reason": reason}}
@@ -123,8 +125,8 @@ class EcommerceSupportAgent:
             return {"tool": "get_product_details", "arguments": {"product_id": product_id}}
         if any(word in lower for word in ["recommend", "suggest", "best for me"]):
             return {"tool": "recommend_products", "arguments": {"customer_id": customer_id, "category": category, "budget": budget}}
-        if any(word in lower for word in ["find", "search", "show", "products", "laptop", "phone", "headphone", "tablet", "watch"]):
-            return {"tool": "search_products", "arguments": {"query": category or brand or message, "category": category, "max_price": budget, "brand": brand}}
+        if any(word in lower for word in ["find", "search", "show", "buy", "purchase", "order", "products", "item", "laptop", "phone", "iphone", "mobile", "headphone", "tablet", "watch"]):
+            return {"tool": "search_products", "arguments": {"query": brand or category or self._clean_product_query(message), "category": category, "max_price": budget, "brand": brand}}
         if self._looks_like_product_query(lower):
             return {"tool": "search_products", "arguments": {"query": message, "max_price": budget, "brand": brand}}
         return None
@@ -154,8 +156,10 @@ class EcommerceSupportAgent:
             products = result.get("products", [])
             if not products:
                 return "I checked the catalog, but I could not find matching available products right now. Try another product name, brand, category, or budget."
-            names = ", ".join(f"{p['name']} at ₹{p['price']}" for p in products[:4])
-            return f"Here are some options I found: {names}."
+            names = ", ".join(f"{p['name']} at ₹{p['price']:,}" for p in products[:6])
+            if len(products) > 6:
+                return f"I found {len(products)} catalog items. Here are the first 6: {names}."
+            return f"I found {len(products)} matching item{'s' if len(products) != 1 else ''}: {names}."
         if tool_name == "get_order_status":
             return f"Order {result['order_id']} is {result['status']}. Expected delivery: {result['expected_delivery']}."
         if tool_name == "save_customer_memory":
@@ -178,6 +182,25 @@ class EcommerceSupportAgent:
 
     def _is_greeting(self, message: str) -> bool:
         return message.strip().lower() in {"hello", "hi", "hey", "good morning", "good afternoon", "good evening"}
+
+    def _is_catalog_request(self, lower: str) -> bool:
+        catalog_terms = [
+            "catalog",
+            "catalogue",
+            "list items",
+            "list products",
+            "show items",
+            "show products",
+            "all items",
+            "all products",
+            "what do you sell",
+        ]
+        return any(term in lower for term in catalog_terms)
+
+    def _clean_product_query(self, message: str) -> str:
+        cleaned = re.sub(r"\b(order|buy|purchase|find|search|show|products?|items?)\b", " ", message, flags=re.IGNORECASE)
+        cleaned = re.sub(r"\s+", " ", cleaned).strip()
+        return cleaned or message
 
     def _looks_like_product_query(self, lower: str) -> bool:
         support_words = [
@@ -209,6 +232,8 @@ class EcommerceSupportAgent:
 
     def _match_category(self, lower: str) -> str | None:
         mapping = {
+            "iphone": "Smartphones",
+            "mobile": "Smartphones",
             "phone": "Smartphones",
             "smartphone": "Smartphones",
             "laptop": "Laptops",

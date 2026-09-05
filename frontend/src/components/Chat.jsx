@@ -1,9 +1,10 @@
 import { useMemo, useRef, useState } from 'react';
-import { BadgeIndianRupee, Heart, RotateCcw, Search, SendHorizontal, Truck } from 'lucide-react';
+import { BadgeIndianRupee, Heart, List, RotateCcw, Search, SendHorizontal, Truck } from 'lucide-react';
 import { sendChat } from '../api.js';
 import Message from './Message.jsx';
 
 const prompts = [
+  { text: 'Show catalog', icon: List },
   { text: 'Find laptops under ₹60000', icon: Search },
   { text: 'Where is my order ORD1001?', icon: Truck },
   { text: 'Can I cancel ORD1002?', icon: BadgeIndianRupee },
