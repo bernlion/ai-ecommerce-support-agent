@@ -65,6 +65,9 @@ class EcommerceSupportAgent:
         }
 
     async def _select_tool(self, customer_id: str, message: str, memory: dict[str, Any]) -> dict[str, Any]:
+        if self._is_greeting(message):
+            return {"tool": "none", "arguments": {}}
+
         heuristic = self._heuristic_tool(customer_id, message)
         if heuristic:
             return heuristic
@@ -80,6 +83,11 @@ class EcommerceSupportAgent:
         return {"tool": "none", "arguments": {}}
 
     async def _final_response(self, message: str, memory: dict[str, Any], tool_name: str, tool_result: dict[str, Any] | None) -> str:
+        if tool_name != "none" and tool_result is not None:
+            return self._fallback_response(tool_name, tool_result)
+        if self._is_greeting(message):
+            return "Hello! I can help you find products, check order status, cancel eligible orders, create return requests, or recommend items."
+
         prompt = (
             f"Customer message: {message}\n"
             f"Customer memory: {json.dumps(memory, default=str)}\n"
@@ -117,6 +125,8 @@ class EcommerceSupportAgent:
             return {"tool": "recommend_products", "arguments": {"customer_id": customer_id, "category": category, "budget": budget}}
         if any(word in lower for word in ["find", "search", "show", "products", "laptop", "phone", "headphone", "tablet", "watch"]):
             return {"tool": "search_products", "arguments": {"query": category or brand or message, "category": category, "max_price": budget, "brand": brand}}
+        if self._looks_like_product_query(lower):
+            return {"tool": "search_products", "arguments": {"query": message, "max_price": budget, "brand": brand}}
         return None
 
     def _sanitize_args(self, tool_name: str, customer_id: str, args: dict[str, Any]) -> dict[str, Any]:
@@ -143,7 +153,7 @@ class EcommerceSupportAgent:
         if tool_name in {"search_products", "recommend_products"}:
             products = result.get("products", [])
             if not products:
-                return "I could not find matching available products right now."
+                return "I checked the catalog, but I could not find matching available products right now. Try another product name, brand, category, or budget."
             names = ", ".join(f"{p['name']} at ₹{p['price']}" for p in products[:4])
             return f"Here are some options I found: {names}."
         if tool_name == "get_order_status":
@@ -165,6 +175,29 @@ class EcommerceSupportAgent:
 
     def _is_preference_message(self, message: str) -> bool:
         return any(word in message.lower() for word in ["prefer", "like", "budget"])
+
+    def _is_greeting(self, message: str) -> bool:
+        return message.strip().lower() in {"hello", "hi", "hey", "good morning", "good afternoon", "good evening"}
+
+    def _looks_like_product_query(self, lower: str) -> bool:
+        support_words = [
+            "hello",
+            "hi",
+            "hey",
+            "thanks",
+            "thank you",
+            "order",
+            "cancel",
+            "return",
+            "refund",
+            "delivery",
+            "status",
+            "track",
+        ]
+        if any(word in lower for word in support_words):
+            return False
+        words = re.findall(r"[a-z0-9]+", lower)
+        return 1 <= len(words) <= 5
 
     def _match_id(self, message: str, pattern: str) -> str | None:
         match = re.search(pattern, message, flags=re.IGNORECASE)
