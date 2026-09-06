@@ -27,12 +27,12 @@ export default function App() {
           <div className="model-pill"><Zap size={16} /> Tool Calling</div>
         </div>
         <div className="status-panel">
-          <span className={health?.mongodb ? 'dot ok' : 'dot'} />
-          MongoDB {health?.mongodb ? 'Connected' : 'Unavailable'}
-          <span className={health?.ollama?.running ? 'dot ok' : 'dot'} />
-          Ollama {health?.ollama?.running ? 'Running' : 'Offline'}
-          <span className={health?.ollama?.model_available ? 'dot ok' : 'dot'} />
-          Gemma {health?.ollama?.model_available ? 'Ready' : 'Missing'}
+          <span className={health?.mongodb || health?.demo_mode ? 'dot ok' : 'dot'} />
+          MongoDB {health?.mongodb ? 'Connected' : health?.demo_mode ? 'Demo Mode' : 'Unavailable'}
+          <span className={health?.ollama?.running || health?.demo_mode ? 'dot ok' : 'dot'} />
+          Ollama {health?.ollama?.running ? 'Running' : health?.demo_mode ? 'Demo Mode' : 'Offline'}
+          <span className={health?.ollama?.model_available || health?.demo_mode ? 'dot ok' : 'dot'} />
+          Gemma {health?.ollama?.model_available ? 'Ready' : health?.demo_mode ? 'Demo Mode' : 'Missing'}
         </div>
         <div className="sidebar-card">
           <Database size={18} />
